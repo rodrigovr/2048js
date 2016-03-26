@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<script src="2048.js"></script>
+<style>
+#board {
+	width: 500px;
+	height: 500px;
+	font-family: sans-serif;
+	font-size: 18pt;
+	font-weight: bold;
+	text-align: center;
+	background-color: #ffbfd3;
+	color: black;
+}
+#board tbody tr td {
+	border: 1px solid gray;
+	border-radius: 4px; 
+	width: 20%;
+}
+#board tbody tr td.v0 {
+	color: transparent;
+}
+#board tbody tr td.v2 {
+	background-color: #fb5858;
+}
+#board tbody tr td.v4 {
+	background-color: #ffd0a9;
+}
+#board tbody tr td.v8 {
+	background-color: #ffd065;
+}
+#board tbody tr td.v16 {
+	background-color: #5050a9;
+}
+#board tbody tr td.v32 {
+	background-color: #ff00d0;
+}
+#board tbody tr td.v64 {
+	background-color: #ff2020;
+}
+#board tbody tr td.v128 {
+	background-color: #ff2065;
+}
+#board tbody tr td.v256 {
+	background-color: #ffc0c0;
+}
+#board tbody tr td.v512 {
+	background-color: #d000a9;
+}
+#board tbody tr td.v1024 {
+	background-color: #d00065;
+}
+#board tbody tr td.v2048 {
+	background-color: #d000d0;
+}
+</style>
+</head>
+<body>
+<table id="board"></table>
+<script>
+Game2048.setBoard("#board")
+Game2048.start()
+</script>
+</body>
+</html>
