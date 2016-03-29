@@ -12,11 +12,11 @@
 	text-align: center;
 	background-color: #ffbfd3;
 	color: black;
+	table-layout: fixed;
 }
 #board tbody tr td {
 	border: 1px solid gray;
-	border-radius: 4px; 
-	width: 20%;
+	border-radius: 4px;
 }
 #board tbody tr td.v0 {
 	color: transparent;
@@ -57,10 +57,19 @@
 </style>
 </head>
 <body>
-<table id="board"></table>
-<script>
-Game2048.setBoard("#board")
-Game2048.start()
-</script>
+	<p>
+		Grid size:
+		<select onchange="Game2048.setSize(this.value); Game2048.start()">
+			<option disabled="" selected="">Pick one...</option>
+			<option value="4">4x4</option>
+			<option value="5">5x5</option>
+			<option value="6">6x6</option>
+		</select>
+	</p>
+	<table id="board"></table>
+	<script>
+		Game2048.setBoard("#board")
+		Game2048.start()
+	</script>
 </body>
 </html>

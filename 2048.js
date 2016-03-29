@@ -3,61 +3,67 @@ var Game2048 = {
 	playing: false,
 	contents: [],
 	element: null,
+	size: 4,
 
 	reset: function() {
 		this.playing = false;
-		this.points = 0; 
-		this.contents = [ /* using -1 as a boundary makes checking easier */
-			[-1, -1, -1, -1, -1, -1, -1],
-			[-1, 0, 0, 0, 0, 0, -1],
-			[-1, 0, 0, 0, 0, 0, -1],
-			[-1, 0, 0, 0, 0, 0, -1],
-			[-1, 0, 0, 0, 0, 0, -1],
-			[-1, 0, 0, 0, 0, 0, -1],
-			[-1, -1, -1, -1, -1, -1, -1],
-		];
+		this.points = 0;
+		var limit = this.size + 1;
+		for (var line=0; line <= limit; line++) {
+			this.contents[line] = new Array(this.size + 2);
+			for (var column=0; column <= limit; column++) {
+				var val = (line == 0 || line == limit || column == 0 || column == limit) ? -1 : 0;
+				this.contents[line][column] = val;
+			}
+		}
 	},
 
 	dice: function() {
-    		return Math.floor(Math.random() * 4) + 1;
+    		return Math.floor(Math.random() * (this.size-1)) + 1;
 	},
 
 	setBoard: function(board_ref) {
 		this.element = document.querySelector(board_ref);
 	},
 
+	setSize: function(grid_size) {
+		this.playing = false;
+		this.size = grid_size;
+	},
+
 	drawBoard: function() {
+		var width = 100.0 / this.size;
 		var board = "<tbody>";
-		for (var line=1;line<=5;line++) {
+		for (var line=1;line<=this.size;line++) {
 			board += "<tr>";
-			for (var column=1;column<=5;column++) {
+			for (var column=1;column<=this.size;column++) {
 				var value = this.contents[line][column];
-				board += "<td class=\"v"+value+"\">"+value+"</td>";
+				board += "<td class=\"v"+value+"\" style=\"width:"+width+"%\">"+value+"</td>";
 			}
 			board += "</tr>";
 		}
 		board += "</tbody><tfoot><tr><td colspan=\"100%\">"+this.points+"</td></tr></tfoot>";
-		this.element.innerHTML = board;	
+		this.element.innerHTML = board;
 	},
 
 	start: function() {
 		this.reset();
 		this.contents[this.dice()][this.dice()] = 2;
-		document.onkeydown = function(evt) { 
-			evt = evt || window.event; 
-			Game2048.keyPressed(evt.keyCode) 
+		document.onkeydown = function(evt) {
+			evt = evt || window.event;
+			Game2048.keyPressed(evt.keyCode)
 		};
 		this.playing = true;
 		this.drawBoard();
 	},
 
 	keyPressed: function(keyCode) {
-		
+
 		if (!this.playing) {
 			console.log("not playing");
 			return;
 		}
-		
+
 		switch (keyCode) {
 		case 37: this.keyLeft(); break;
 		case 38: this.keyUp(); break;
@@ -83,10 +89,10 @@ var Game2048 = {
 	},
 
 	keyLeft: function() {
-		for (var line=1; line <= 5; line++) {
+		for (var line=1; line <= this.size; line++) {
 			var start=1;
 			for (var steps = 1; steps < 5; steps++) {
-				for (var column=start; column <= 4; column++) {
+				for (var column=start; column < this.size; column++) {
 					var value = this.contents[line][column];
 					if (value != 0) {
 						if (value == this.contents[line][column+1]) {
@@ -104,10 +110,10 @@ var Game2048 = {
 	},
 
 	keyUp: function() {
-		for (var column=1; column <= 5; column++) {
-			var start=1;			
+		for (var column=1; column <= this.size; column++) {
+			var start=1;
 			for (var steps = 1; steps < 5; steps++) {
-				for (var line=start; line < 5; line++) {
+				for (var line=start; line < this.size; line++) {
 					var value = this.contents[line][column];
 					if (value != 0) {
 						if (value == this.contents[line+1][column]) {
@@ -125,8 +131,8 @@ var Game2048 = {
 	},
 
 	keyRight: function() {
-		for (var line=1; line <= 5; line++) {
-			var start=5;
+		for (var line=1; line <= this.size; line++) {
+			var start=this.size;
 			for (var steps = 1; steps < 5; steps++) {
 				for (var column=start; column > 1; column--) {
 					var value = this.contents[line][column];
@@ -144,10 +150,10 @@ var Game2048 = {
 			}
 		}
 	},
-	
+
 	keyDown: function() {
-		for (var column=1; column <= 5; column++) {
-			var start=5;
+		for (var column=1; column <= this.size; column++) {
+			var start=this.size;
 			for (var steps = 1; steps < 5; steps++) {
 				for (var line=start; line > 1; line--) {
 					var value = this.contents[line][column];
@@ -175,11 +181,11 @@ var Game2048 = {
 	},
 
 	spawnRight: function() {
-		this.spawnColumn(5);
+		this.spawnColumn(this.size);
 	},
-	
+
 	spawnDown: function() {
-		this.spawnLine(5);
+		this.spawnLine(this.size);
 	},
 
 	spawnColumn: function(column) {
@@ -190,13 +196,13 @@ var Game2048 = {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
 				return;
 			}
-		}	
+		}
 		// sequential next
 		for(var line=1; line <=5; line++) {
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
 				return;
-			}			
+			}
 		}
 		// game is problably over
 	},
@@ -209,33 +215,33 @@ var Game2048 = {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
 				return;
 			}
-		}	
+		}
 		// sequential next
 		for(var column=1; column <=5; line++) {
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
 				return;
-			}			
+			}
 		}
 		// game is problably over
 	},
 
 	sumPoints: function() {
-		for (var line=1;line <= 5;line++) {
-			for (var column=1; column <= 5; column++) {
+		for (var line=1;line <= this.size;line++) {
+			for (var column=1; column <= this.size; column++) {
 				this.points += this.contents[line][column];
 			}
-		}		
+		}
 	},
 
 	canContinue: function() {
-	
-		for (var line=1;line < 5;line++) {
-			for (var column=1; column < 5; column++) {
+
+		for (var line=1;line <= this.size;line++) {
+			for (var column=1; column <= this.size; column++) {
 				if (this.contents[line][column] == 0) return true;
 				// compare only 2 sides to avoid check everything twice
-				if (this.contents[line][column] == this.contents[line-1][column]) return true; 
-				if (this.contents[line][column] == this.contents[line][column-1]) return true; 
+				if (this.contents[line][column] == this.contents[line-1][column]) return true;
+				if (this.contents[line][column] == this.contents[line][column-1]) return true;
 			}
 		}
 
