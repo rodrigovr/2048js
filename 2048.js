@@ -75,14 +75,17 @@ var Game2048 = {
 			this.playing = false;
 			this.showEnd();
 		} else {
+			var spawned = false;
 			switch (keyCode) {
-			case 37: this.spawnRight(); break;
-			case 38: this.spawnDown(); break;
-			case 39: this.spawnLeft(); break;
-			case 40: this.spawnUp(); break;
+			case 37: spawned=this.spawnRight(); break;
+			case 38: spawned=this.spawnDown(); break;
+			case 39: spawned=this.spawnLeft(); break;
+			case 40: spawned=this.spawnUp(); break;
 			default: return;
 			}
-			this.sumPoints();
+			if (spawned) {
+				this.sumPoints();
+			}
 		}
 		this.drawBoard();
 		console.log(this.contents);
@@ -173,19 +176,19 @@ var Game2048 = {
 	},
 
 	spawnLeft: function() {
-		this.spawnColumn(1);
+		return this.spawnColumn(1);
 	},
 
 	spawnUp: function() {
-		this.spawnLine(1);
+		return this.spawnLine(1);
 	},
 
 	spawnRight: function() {
-		this.spawnColumn(this.size);
+		return this.spawnColumn(this.size);
 	},
 
 	spawnDown: function() {
-		this.spawnLine(this.size);
+		return this.spawnLine(this.size);
 	},
 
 	spawnColumn: function(column) {
@@ -194,17 +197,17 @@ var Game2048 = {
 			var line = this.dice();
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
-				return;
+				return true;
 			}
 		}
 		// sequential next
 		for(var line=1; line <=5; line++) {
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
-				return;
+				return true;
 			}
 		}
-		// game is problably over
+		return false;
 	},
 
 	spawnLine: function(line) {
@@ -213,17 +216,17 @@ var Game2048 = {
 			var column = this.dice();
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
-				return;
+				return true;
 			}
 		}
 		// sequential next
 		for(var column=1; column <=5; line++) {
 			if (this.contents[line][column] == 0) {
 				this.contents[line][column] = this.dice() == 1 ? 4 : 2;
-				return;
+				return true;
 			}
 		}
-		// game is problably over
+		return false;
 	},
 
 	sumPoints: function() {

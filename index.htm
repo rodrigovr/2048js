@@ -59,7 +59,7 @@
 <body>
 	<p>
 		Grid size:
-		<select onchange="Game2048.setSize(this.value); Game2048.start()">
+		<select onchange="Game2048.setSize(this.value); this.blur(); Game2048.start()">
 			<option disabled="" selected="">Pick one...</option>
 			<option value="4">4x4</option>
 			<option value="5">5x5</option>
